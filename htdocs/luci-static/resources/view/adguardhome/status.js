@@ -34,7 +34,7 @@ return view.extend({
         const fields = [
             _('Running'), status.running ? _('Yes') : _('No'),
             _('Protection enabled'), status.protection_enabled ? _('Yes') : _('No'),
-            _('Statistics period (days)'), agh_config.dns_statistics_interval,
+            _('Statistics period (days)'), agh_config.statistics_interval,
             _('Web interface'), E('a', { 'href': weburl, 'target': '_blank' }, weburl),
             _('DNS listen port'), status.dns_port,
             _('DNS listen addresses'), listen_addresses,

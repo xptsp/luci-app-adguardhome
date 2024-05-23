@@ -1,6 +1,6 @@
 # LuCI App AdGuardHome
 
-**NOTE:** Original Source found for LUCI app [here](https://github.com/openwrt/luci/tree/3253c2644215a1ea8136199044e06ad5e4fd9de9/applications/luci-app-adguardhome), Author unknown.
+**NOTE:** Original Source found for LUCI app [here](https://github.com/openwrt/luci/tree/3253c2644215a1ea8136199044e06ad5e4fd9de9/applications/luci-app-adguardhome) by Duncan Hill (<openwrt-dev@cricalix.net>).
 
 This LuCI app provides basic integration with the [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome) [package](https://openwrt.org/packages/pkgdata/adguardhome) for OpenWrt. Note that the AdGuard Home package installation and configuration requires interaction with the OpenWrt command line; this app does not remove any of that interaction.
 
@@ -44,3 +44,8 @@ Dependencies are declared in the Makefile, but are
 
 ### Configuration Tab
 ![MAC Filter Tab](https://github.com/xptsp/luci-app-adguardhome/blob/main/.github/images/config.png?raw=true)
+
+## Package History
+
+- v1.0 - Initial release
+- v2.0 - Freed package from most dependancies except for AdGuardHome.
