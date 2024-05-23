@@ -53,22 +53,18 @@ check_if_empty()
 }
 call_rest_api()
 {
-	USER=$(uci get adguardhome.config.web_username 2> /dev/null)
-	check_if_empty "Username not found in uci adguardhome" ${USER} || exit 1
-	PASS=$(uci get adguardhome.config.web_password 2> /dev/null)
-	check_if_empty "Password not found in uci adguardhome" ${PASS} || exit 1
-	CODE=$(curl --silent -L -k -u ${USER}:${PASS} ${PROTO}://${HOST}:${PORT}/control/$1 -o $TFILE -w "%{http_code"})
+	AGH_USER=$(uci get adguardhome.config.web_username 2> /dev/null)
+	check_if_empty "Username not found in uci adguardhome" ${AGH_USER} || exit 1
+	AGH_PASS=$(uci get adguardhome.config.web_password 2> /dev/null)
+	check_if_empty "Password not found in uci adguardhome" ${AGH_PASS} || exit 1
+	CODE=$(curl --silent -L -k -u ${AGH_USER}:${AGH_PASS} ${PROTO}://${HOST}:${PORT}/control/$1 -o $TFILE -w "%{http_code"})
 	if [[ "${CODE}" == "200" ]]; then
-        # Make the shell happy; 0 is good. All else is an error exit code.
-		CODE=0
+        cat $TFILE | tr -d '\n'
 	else
 		MSG="REST call failed with '$(cat ${TFILE})'. Are the credentials correct?"
 		log_error "$MSG"
 		echo "{\"error\":\"$MSG\"}" > ${TFILE}
 	fi
-	echo -n "{\"code\":${CODE},\"result\":"
-	cat $TFILE | tr -d '\n'
-	echo "}"
 }
 
 ############################################################################################
@@ -108,13 +104,14 @@ case "$1" in
 		case "$2" in
 			get_config)
 				# Start the JSON array:
-				echo -n "{\"code\":200,\"result\":{"
+				echo -n "{"
 				# Group any variables starting with "dns_" together:
 				grep "_1=\"" ${TFILE} | grep dns_ | while read LINE; do group_vars ${LINE%=*}; done
 				# Return the AGH configuration as a JSON table: 
 				cat ${TFILE} | sed "s|^|\"|g" | sed "s|=\"|\":\"|g" | sed "s|\"$|\",|g" | tr -d '\n'
 				# Include web url, then close the JSON array:
-				echo "\"web_url\":\"${PROTO}://${HOST}:${PORT}\"}}"
+				echo -n "\"bcrypt-tool\":\"$(whereis bcrypt-tool | awk '{print $2}')\","
+				echo "\"web_url\":\"${PROTO}://${HOST}:${PORT}\"}"
 				;;
 
 			get_statistics)
@@ -133,15 +130,15 @@ case "$1" in
 				# Read and load the argument into JSON array:  
 				read input
 				json_load "$input"
-				# Get the requested username and password from JSON array: 
-				json_get_var FUSER "username"
-				check_if_empty "\\\"username\\\" parameter missing." "${FUSER}" || exit 1
-				json_get_var FPASS "password"
-				check_if_empty "\\\"password\\\" parameter missing." "${FPASS}" || exit 1
+				# Get username and password from JSON array and verify they aren't empty: 
+				json_get_var AGH_USER "username"
+				check_if_empty "username parameter missing." "${AGH_USER}" || exit 1
+				json_get_var AGH_PASS "password"
+				check_if_empty "password parameter missing." "${AGH_PASS}" || exit 1
 				# Change the username in the AGH configuration file:
-				sed -i "s|\- name: .*|\- name: ${FUSER} |" /etc/adguardhome.yaml
+				sed -i "s|\- name: .*|\- name: ${AGH_USER} |" /etc/adguardhome.yaml
 				# Calculate and replace password hash in the AGH configuration file:
-				sed -i "s|\password: .*|\password: $(bcrypt-tool hash ${FPASS})|" /etc/adguardhome.yaml
+				sed -i "s|\password: .*|\password: $(bcrypt-tool hash ${AGH_PASS})|" /etc/adguardhome.yaml
 				# Restart AdGaurdHome:
 				service adguardhome restart
 				# Return success to caller:  
