@@ -20,10 +20,6 @@ return view.extend({
     generic_failure: function(message) {
         return E('div', {'class': 'error'}, [_('RPC call failure: '), message])
     },
-    urlmaker: function (host, port, tls_flag) {
-        var proto = tls_flag ? 'https://' : 'http://';
-        return proto + host + ':' + port + '/';
-    },
     render_status_table: function (status, agh_config) {
         if (status.error) {
             return this.generic_failure(status.error)
@@ -31,15 +27,15 @@ return view.extend({
         // Take a hint from the base LuCI module for the Overview page,
         // declare the fields and use a loop to build the tabular status view.
         // Written out as key/value pairs, but it's just an iterable of elements.
-        const weburl = this.urlmaker(agh_config.bind_host, status.http_port, agh_config.tls.enabled);
+        const weburl = agh_config.web_url;
         const listen_addresses = L.isObject(status.dns_addresses) ? status.dns_addresses.join(', ') : _('Not found');
-        const bootstrap_dns = L.isObject(agh_config.dns.bootstrap_dns) ? agh_config.dns.bootstrap_dns.join(', ') : _('Not found');
-        const upstream_dns = L.isObject(agh_config.dns.upstream_dns) ? agh_config.dns.upstream_dns.join(', ') : _('Not found');
+        const bootstrap_dns = L.isObject(agh_config.dns_bootstrap_dns) ? agh_config.dns_bootstrap_dns.join(', ') : _('Not found');
+        const upstream_dns = L.isObject(agh_config.dns_upstream_dns) ? agh_config.dns_upstream_dns.join(', ') : _('Not found');
         const fields = [
             _('Running'), status.running ? _('Yes') : _('No'),
             _('Protection enabled'), status.protection_enabled ? _('Yes') : _('No'),
-            _('Statistics period (days)'), agh_config.dns.statistics_interval,
-            _('Web interface'), E('a', { 'href': weburl, 'target': '_blank' }, status.http_port),
+            _('Statistics period (days)'), agh_config.dns_statistics_interval,
+            _('Web interface'), E('a', { 'href': weburl, 'target': '_blank' }, weburl),
             _('DNS listen port'), status.dns_port,
             _('DNS listen addresses'), listen_addresses,
             _('Bootstrap DNS addresses'), bootstrap_dns,
@@ -96,6 +92,7 @@ return view.extend({
         if (statistics.error) {
             return this.generic_failure(statistics.error)
         }
+        if (typeof statistics.top_queried_domains === 'undefined') { return ""; }
         const top_queries = statistics.top_queried_domains.slice(0, 5);
         return this.render_top_table('top_queries', top_queries)
     },
@@ -104,6 +101,7 @@ return view.extend({
         if (statistics.error) {
             return this.generic_failure(statistics.error)
         }
+        if (typeof statistics.top_blocked_domains === 'undefined') { return ""; }
         const top_blocked = statistics.top_blocked_domains.slice(0, 5);
         return this.render_top_table('top_blocked', top_blocked)
     },

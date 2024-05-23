@@ -54,9 +54,9 @@ check_if_empty()
 call_rest_api()
 {
 	USER=$(uci get adguardhome.config.web_username 2> /dev/null)
-	check_if_empty "Username not found in uci adguardhome" ${USER}
+	check_if_empty "Username not found in uci adguardhome" ${USER} || exit 1
 	PASS=$(uci get adguardhome.config.web_password 2> /dev/null)
-	check_if_empty "Password not found in uci adguardhome" ${PASS}
+	check_if_empty "Password not found in uci adguardhome" ${PASS} || exit 1
 	CODE=$(curl --silent -L -k -u ${USER}:${PASS} ${PROTO}://${HOST}:${PORT}/control/$1 -o $TFILE -w "%{http_code"})
 	if [[ "${CODE}" == "200" ]]; then
         # Make the shell happy; 0 is good. All else is an error exit code.
@@ -128,14 +128,16 @@ case "$1" in
 				;;
 
 			set_passwd)
+				# Check if bcrypt-tool is available for use:
+				check_if_empty "bcrypt-tool is missing." "$(whereis bcrypt-tool)"
 				# Read and load the argument into JSON array:  
 				read input
 				json_load "$input"
 				# Get the requested username and password from JSON array: 
 				json_get_var FUSER "username"
-				check_if_empty "\\\"username\\\" parameter missing." ${FUSER} || exit 1
+				check_if_empty "\\\"username\\\" parameter missing." "${FUSER}" || exit 1
 				json_get_var FPASS "password"
-				check_if_empty "\\\"password\\\" parameter missing." ${FPASS} || exit 1
+				check_if_empty "\\\"password\\\" parameter missing." "${FPASS}" || exit 1
 				# Change the username in the AGH configuration file:
 				sed -i "s|\- name: .*|\- name: ${FUSER} |" /etc/adguardhome.yaml
 				# Calculate and replace password hash in the AGH configuration file:

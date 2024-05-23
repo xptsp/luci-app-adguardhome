@@ -33,17 +33,14 @@ This app provides a link to the AdGuard Home web UI, making it easy to see more 
 Dependencies are declared in the Makefile, but are
 
 * adguardhome, as this app is useless without it
-* luasocket, for talking to the AdGuard Home REST API
-* luci-lib-jsonc, for doing JSON encoding
-* lyaml, for parsing the AdGuard home YAML configuration
 
 ## Screenshots
 
 ### Status Tab
-![Status Tab](https://github.com/xptsp/openwrt-packages/blob/main/luci-app-adguardhome/.github/images/status.png?raw=true)
+![Status Tab](https://github.com/xptsp/luci-app-adguardhome/blob/main/.github/images/status.png?raw=true)
 
 ### Logs Tab
-![General Tab](https://github.com/xptsp/openwrt-packages/blob/main/luci-app-adguardhome/.github/images/logs.png?raw=true)
+![General Tab](https://github.com/xptsp/luci-app-adguardhome/blob/main/.github/images/logs.png?raw=true)
 
 ### Configuration Tab
-![MAC Filter Tab](https://github.com/xptsp/openwrt-packages/blob/main/luci-app-adguardhome/.github/images/config.png?raw=true)
+![MAC Filter Tab](https://github.com/xptsp/luci-app-adguardhome/blob/main/.github/images/config.png?raw=true)
