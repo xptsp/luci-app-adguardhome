@@ -6,13 +6,13 @@
 'require view';
 
 return view.extend({
-    load: function() {
+	load: function() {
 		return Promise.all([
 			L.resolveDefault(fs.stat('/sbin/logread'), null),
 			L.resolveDefault(fs.stat('/usr/sbin/logread'), null)
 		]).then(function(stat) {
 			var logger = stat[0] ? stat[0].path : stat[1] ? stat[1].path : null;
-			
+
 			return fs.exec_direct(logger, [ '-e', 'AdGuardHome' ]).catch(function(err) {
 				ui.addNotification(null, E('p', {}, _('Unable to load log data: ' + err.message)));
 				return '';
@@ -20,7 +20,7 @@ return view.extend({
 		});
 	},
 
-    render: function(logdata) {
+	render: function(logdata) {
 		var loglines = logdata.trim().split(/\n/).reverse().slice(0, 50);
 
 		return E([], [
@@ -38,7 +38,7 @@ return view.extend({
 		]);
 	},
 
-    handleSave: null,
-    handleSaveApply: null,
-    handleReset: null
+	handleSave: null,
+	handleSaveApply: null,
+	handleReset: null
 });

@@ -19,7 +19,7 @@ define Package/luci-app-adguardhome
 	SUBMENU:=3. Applications
 	TITLE:=LuCI support for AdguardHome
 	PKGARCH:=all
-	DEPENDS:=+adguardhome +luci-base
+	DEPENDS:=+adguardhome +luci-base +bcrypt-js
 endef
 
 define Package/luci-app-adguardhome/description
@@ -37,13 +37,13 @@ define Package/luci-app-adguardhome/install
 	$(INSTALL_DATA) ./htdocs/luci-static/resources/view/adguardhome/*.js $(1)/www/luci-static/resources/view/adguardhome/
 
 	$(INSTALL_DIR) $(1)/usr/libexec/rpcd/
-	$(INSTALL_DATA) ./root/usr/libexec/rpcd/luci.adguardhome $(1)/usr/libexec/rpcd/
+	$(INSTALL_DATA) ./files/luci.adguardhome $(1)/usr/libexec/rpcd/
 
 	$(INSTALL_DIR) $(1)/usr/share/luci/menu.d/
-	$(INSTALL_DATA) ./root/usr/share/luci/menu.d/luci-app-adguardhome.json $(1)/usr/share/luci/menu.d/
+	$(INSTALL_DATA) ./files/luci-menu.d.json $(1)/usr/share/luci/menu.d/luci-app-adguardhome.json
 
 	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
-	$(INSTALL_DATA) ./root/usr/share/rpcd/acl.d/luci-app-adguardhome.json $(1)/usr/share/rpcd/acl.d/
+	$(INSTALL_DATA) ./files/rcp-acl.d.json $(1)/usr/share/rpcd/acl.d/luci-app-adguardhome.json
 endef
 
 $(eval $(call BuildPackage,luci-app-adguardhome))
