@@ -99,7 +99,7 @@ PORT=${http_address##*:}
 ############################################################################################
 case "$1" in
 	list)
-		echo '{ "get_config": {}, "get_statistics": {}, "get_status": {}, "set_passwd": {"username":"string", "password":"string"} }'
+		echo '{ "get_config": {}, "get_statistics": {}, "get_status": {}, "set_passwd": {"username":"string", "hash":"string"} }'
 		;;
 	call)
 		case "$2" in
@@ -134,12 +134,12 @@ case "$1" in
 				# Get username and password from JSON array and verify they aren't empty: 
 				json_get_var AGH_USER "username"
 				check_if_empty "username parameter missing." "${AGH_USER}" || exit 1
-				json_get_var AGH_PASS "password"
-				check_if_empty "password parameter missing." "${AGH_PASS}" || exit 1
+				json_get_var AGH_HASH "hash"
+				check_if_empty "hash parameter missing." "${AGH_HASH}" || exit 1
 				# Change the username in the AGH configuration file:
 				sed -i "s|\- name: .*|\- name: ${AGH_USER} |" /etc/adguardhome.yaml
 				# Calculate and replace password hash in the AGH configuration file:
-				sed -i "s|\password: .*|\password: $(bcrypt-tool hash ${AGH_PASS})|" /etc/adguardhome.yaml
+				sed -i "s|\password: .*|\password: ${AGH_HASH}|" /etc/adguardhome.yaml
 				# Restart AdGaurdHome:
 				service adguardhome restart
 				# Return success to caller:  

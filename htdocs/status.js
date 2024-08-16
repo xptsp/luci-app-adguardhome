@@ -128,7 +128,7 @@ return view.extend({
 			return E('div', { 'class': 'cbi-map', 'id': 'map' }, [
 				E('div', { 'class': 'cbi-section' }, [
 					E('div', { 'class': 'left' }, [
-						E('h3', _('AdGuard Home Status - Error')),
+						E('h2', _('AdGuard Home Status - Error')),
 						E('div', { 'class': 'error' }, status.auth_error),
 						E('div', { 'class': 'info' }, _('Please open the Configuration section, and provide the credentials.'))
 					])
@@ -140,7 +140,7 @@ return view.extend({
 		return E('div', { 'class': 'cbi-map', 'id': 'map' }, [
 			E('div', { 'class': 'cbi-section' }, [
 				E('div', { 'class': 'left' }, [
-					E('h3', _('AdGuard Home Status')),
+					E('h2', _('AdGuard Home Status')),
 					this.render_status_table(status, agh_config)
 				]),
 				E('div', { 'class': 'left' }, [
