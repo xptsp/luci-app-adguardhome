@@ -6,7 +6,8 @@
 				"luci.adguardhome": [
 					"get_config",
 					"get_status",
-					"get_statistics"
+					"get_statistics",
+					"set_passwd",
 				]
 			},
 			"uci": [
