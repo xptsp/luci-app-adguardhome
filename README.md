@@ -51,3 +51,4 @@ Dependencies are declared in the Makefile, but are
 - v2.0 - Freed package from most dependancies except for AdGuardHome.
 - v2.0.1 - Added forgotten dependency, plus minor fix in rpcd/luci.adguardhome
 - v2.0.2 - Fixed issue in rpcd/luci.adguardhome so it works for older versions of AdGuardHome binary
+- v2.1 - Added ability to change AdGuardHome password from LuCI app
