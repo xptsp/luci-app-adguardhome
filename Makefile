@@ -19,7 +19,7 @@ define Package/luci-app-adguardhome
 	SUBMENU:=3. Applications
 	TITLE:=LuCI support for AdguardHome
 	PKGARCH:=all
-	DEPENDS:=+adguardhome +luci-base +twin-bcrypt-js
+	DEPENDS:=+adguardhome +luci-base +twin-bcrypt-js +curl
 endef
 
 define Package/luci-app-adguardhome/description
